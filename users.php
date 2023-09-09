@@ -41,9 +41,15 @@ $result = $conn->query($sql);
                 // Step 3: Display user data in the table
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
+                        $submission_query = "SELECT notify FROM submissions WHERE user_id = " . $row['id'] . " AND notify = 'new'";
+                        $submission_result = $conn->query($submission_query);
                         echo "<tr>";
                         echo "<td>" . $row["id"] . "</td>";
-                        echo "<td>" . $row["username"] . "</td>";
+                        if ($submission_result->num_rows > 0) {
+                            echo "<td class='custom-cell'><div class='red-circle'></div>" . $row["username"] . "</td>";
+                        } else {
+                            echo "<td>" . $row["username"] . "</td>";
+                        }
                         echo "<td>" . $row["email"] . "</td>";
                         echo '<td><a href="user_details.php?id=' . $row["id"] . '">View Details</a></td>';
                         echo "</tr>";

@@ -24,7 +24,7 @@ if (!isset($_SESSION["user_id"])) {
         <a class="nav-link" aria-current="page" href="card-submission.php">Add New Grading Order</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link">My Profile</a>
+          <a class="nav-link" aria-current="page" href="profile.php">My Profile</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="logout.php">Logout</a>

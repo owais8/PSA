@@ -15,6 +15,11 @@ $id=$_GET["id"];
 // Step 2: Retrieve data from the "orders_psa" table
 $sql = "SELECT id,card_value, service_provider, card_quantity,status FROM submissions where user_id=$id";
 $result = $conn->query($sql);
+$sql = "UPDATE submissions SET notify = 'old' WHERE user_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $id);
+$stmt->execute();
+
 
 // Step 3: Display the data in an HTML table
 ?>
@@ -34,6 +39,10 @@ $result = $conn->query($sql);
 <div class='container'>
 
     <h1>Orders List</h1>
+    <a href="javascript:history.back()" class="btn btn-primary">Back</a>
+    <br>
+    <br>
+
     <table class="table table-lg">
         <thead>
           <tr>
@@ -75,7 +84,11 @@ $result = $conn->query($sql);
                 } else {
                     $total_q=0;
                 }
-                $price=($row1["total_grading_price"]/$row1["card_quantity"])*$total_q;
+                if ($row1["card_quantity"]==0){
+                    $price=0;
+                }
+                else{
+                $price=($row1["total_grading_price"]/$row1["card_quantity"])*$total_q;}
                 echo "<tr>";
                 echo "<td>" . $row["id"] . "</td>";
                 echo "<td>" . $row["status"] . "</td>";

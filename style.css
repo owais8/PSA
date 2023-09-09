@@ -352,3 +352,17 @@ color: #878787;
   align-items: center;
   height: 100vh;
 }
+.custom-cell {
+  position: relative;
+}
+
+.red-circle {
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  position: absolute;
+  left: -20px; /* Adjust the position as needed */
+  top: 50%;
+  transform: translateY(-50%);
+}
