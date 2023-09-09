@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <body>
   <?php include 'navbar.php'; ?>
 
-    <form action="" method='post' class="container-md">
+    <form action="" method='post' class="container-md" id='myForm'>
       <h2><b>CARD SUBMISSION</b></h2>
       <p>You are more than welcome to submit different service levels in the same package to us (ex: PSA bulk & SGC regular).</p>
   
@@ -195,7 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
       </div>
       <br>
-      <table class="table table-sm table-borderless">
+      <table id='myTable' class="table table-sm table-borderless">
         <thead>
           <tr>
             <th scope="col">Service Provider</th>

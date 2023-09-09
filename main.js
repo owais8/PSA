@@ -16,7 +16,15 @@
         const evaluateCardsCheck = document.getElementById("evaluateCardsCheck");
         const cardsPrice = document.getElementById("grandTotal");
         const selectedOption = document.getElementById("input_2_24");
-
+        document.getElementById("myForm").addEventListener("submit", function (event) {
+            // Get the table element
+            var table = document.getElementById("myTable");
+            // Check if the table is empty
+            if (table.rows.length === 1) {
+                alert("Table is empty. Please fill in the table before submitting the form.");
+                event.preventDefault(); // Prevent form submission
+            }
+        });
         // Function to update the price
         evaluateCardsCheck.addEventListener("change", updateEvaluation);
         psaQuantityInput.addEventListener("input", updateEvaluation);
