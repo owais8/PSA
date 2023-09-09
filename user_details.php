@@ -2,12 +2,16 @@
 session_start();
 require_once 'config.php';
 $conn = connectDB();
+if (!isset($_SESSION["user_id"])) {
+    header("Location: admin-login.php");
+    exit();
+}
 
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-$id=$_SESSION["user_id"];
+$id=$_GET["id"];
 // Step 2: Retrieve data from the "orders_psa" table
 $sql = "SELECT id,card_value, service_provider, card_quantity,status FROM submissions where user_id=$id";
 $result = $conn->query($sql);
@@ -25,8 +29,8 @@ $result = $conn->query($sql);
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<?php include 'navbar.php'; ?>
-
+<br>
+<br>
 <div class='container'>
 
     <h1>Orders List</h1>
@@ -38,11 +42,7 @@ $result = $conn->query($sql);
 
             <th scope="col">Total Price</th>
             <th scope="col">Quantity</th>
-            <th scope="col">Details</th>
-
-
-            <th scope="col">View Grades</th>
-            <th scope="col">Payment Link</th>
+            <th scope="col">Edit Submission Number</th>
 
           </tr>
         </thead>
@@ -81,9 +81,7 @@ $result = $conn->query($sql);
                 echo "<td>" . $row["status"] . "</td>";
                 echo "<td>$" . ($price + $row1["insurance"] + 30 + $row1["total_evaluation_price"]) . "</td>"; // Corrected the calculation and added </td>
                 echo "<td>" . $row["card_quantity"] . "</td>";
-                echo '<td><a href="order_details.php?id=' . $row["id"] . '">View Details</a></td>';
-                echo "<td></td>";
-                echo "<td></td>";
+                echo '<td><a href="edit_order.php?id=' . $row["id"] . '">Edit</a></td>';
                 echo "</tr>";
             }
         } else {
@@ -93,7 +91,6 @@ $result = $conn->query($sql);
     </table>
     </div>
 </body>
-<?php include 'footer.php'; ?>
 
 </html>
 

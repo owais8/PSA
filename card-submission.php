@@ -3,6 +3,8 @@
 session_start();
 require_once('config.php');
 $conn=connectDB();
+$id=$_SESSION["user_id"];
+
 // Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Retrieve form data
@@ -28,12 +30,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $card_value = $_POST["card_value"];
     $service_provider = $_POST["service_provider"];
     $card_quantity = $_POST["card_quantity"];
-
     // Insert data into the database using SQLi (not recommended for production)
-    $sql = "INSERT INTO submissions (first_name, last_name, email, phone_number, address, street_address, address_line2, state, coupon_code, referral_code, total_price, total_grading_price, total_evaluation_price, card_value, service_provider, card_quantity)
-            VALUES ('$first_name', '$last_name', '$email', '$phone_number', '$address', '$street_address', '$address_line2', '$state', '$coupon_code', '$referral_code', '$total_price', '$total_grading_price', '$total_evaluation_price', '$card_value', '$service_provider', '$card_quantity')";
+    $sql = "INSERT INTO submissions (first_name, last_name, email, phone_number, address, street_address, address_line2, state, coupon_code, referral_code, total_price, total_grading_price, total_evaluation_price, card_value, service_provider, card_quantity, user_id)
+            VALUES ('$first_name', '$last_name', '$email', '$phone_number', '$address', '$street_address', '$address_line2', '$state', '$coupon_code', '$referral_code', '$total_price', '$total_grading_price', '$total_evaluation_price', '$card_value', '$service_provider', '$card_quantity', '$id')";
 
     if ($conn->query($sql) === TRUE) {
+        $submission_id = $conn->insert_id;
+        header("Location: logging.php?id=" . $submission_id); // Redirect to insurance page
+
         echo "Form data has been successfully submitted!";
     } else {
         echo "Error: " . $sql . "<br>" . $conn->error;
@@ -62,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </head>
 
   <body>
+  <?php include 'navbar.php'; ?>
 
     <form action="" method='post' class="container-md">
       <h2><b>CARD SUBMISSION</b></h2>
@@ -86,6 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               type="text"
               class="form-control"
               id="email"
+              required="true"
             />
           </div>
         </div>
@@ -97,6 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               type="text"
               class="form-control"
               id="email"
+              required="true"
             />
           </div>
         </div>
@@ -110,6 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               type="email"
               class="form-control"
               id="email"
+              required="true"
             />
           </div>
         </div>
@@ -121,6 +129,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               type="text"
               class="form-control"
               id="email"
+              required="true"
+
             />
           </div>
         </div>
@@ -138,6 +148,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           type="text"
           class="form-control"
           id="email"
+          required="true"
+
         />
       </div>
     </div>
@@ -149,6 +161,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           type="text"
           class="form-control"
           id="pwd"
+          required="true"
+
         />
       </div>
     </div>
@@ -161,6 +175,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               type="text"
               class="form-control"
               id="email"
+              required="true"
+
             />
           </div>
         </div>
@@ -172,6 +188,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               type="text"
               class="form-control"
               id="email"
+              required="true"
+
             />
           </div>
         </div>
@@ -218,12 +236,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
         </div>
       </div>
-      <input type="hidden" name="total_price" id="total_price" value="0">
-      <input type="hidden" name="total_grading_price" id="total_grading_price" value="0">
-      <input type="hidden" name="total_evaluation_price" id="total_evaluation_price" value="0">
-      <input type="hidden" name="card_value" id="card_value" value="0">
-      <input type="hidden" name="service_provider" id="service_provider" value="0">
-      <input type="hidden" name="card_quantity" id="card_quantity" value="0">
+      <input type="hidden" name="total_price" id="total_price" value="0" required>
+      <input class='input-hidden' type="text" name="total_grading_price" id="total_grading_price" value="0" required>
+      <input type="hidden" name="total_evaluation_price" id="total_evaluation_price" value="0" required>
+      <input type="hidden" name="card_value" id="card_value" value="0" required="required">
+      <input type="hidden" name="service_provider" id="service_provider" required="true">
+      <input type="hidden" name="card_quantity" id="card_quantity" required="required">
 
 
 <!-- Button trigger modal -->
@@ -325,6 +343,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </form>
     <hr />
   </body>
+  <?php include 'footer.php'; ?>
+
   <script src="https://cdn.jsdelivr.net/npm/popper.js@2.11.6/dist/umd/popper.min.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>

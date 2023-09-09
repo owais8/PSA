@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once 'config.php'; // Include the config file
 $conn = connectDB();
 
@@ -12,9 +13,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_GET["id"])) {
         $orderId = intval($_GET["id"]); // Get the ID from the URL
         $insurance = $_POST["insurance"];
+        if ($insurance != 0) {
+            $insurance = $insurance / 500 * 6;
+        }
+        else{
+            $insurance = 0;
+        }
 
         // Update the insurance value in the psa_orders table
-        $sql = "UPDATE orders_psa SET insurance = ? WHERE order_id = ?";
+        $sql = "UPDATE submissions SET insurance = ? WHERE id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("si", $insurance, $orderId);
 

@@ -337,6 +337,14 @@ color: #ff5e14;
 font-size: 14px;
 color: #878787;
 }
+.input-hidden{
+  height:0;
+  width:0;
+  padding:0;
+  margin:0;
+  float:right;
+  display: none !important;
+}
 .login-container {
   display: flex;
   width: 80% !important;

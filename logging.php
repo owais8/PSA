@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once 'config.php'; // Include the config file
 $conn = connectDB();
 

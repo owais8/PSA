@@ -1,7 +1,9 @@
 <?php
+
 session_start();
 require_once("config.php"); // Include your database connection script here
 $conn = connectDB();
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST["username"];
     $password = $_POST["password"];
@@ -21,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (password_verify($password, $hashed_password)) {
             $_SESSION["user_id"] = $row["id"];
             $_SESSION["username"] = $row["username"];
-            header("Location: card-submission.php"); // Redirect to a dashboard page
+            header("Location: users.php"); // Redirect to a dashboard page
         } else {
             echo "Invalid username or password";
         }
@@ -68,3 +70,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 </body>
 </html>
+s

@@ -1,6 +1,5 @@
 
 <?php 
-session_start();
 
 // Check if the user is logged in, if not, redirect to the login page
 if (!isset($_SESSION["user_id"])) {
@@ -22,7 +21,7 @@ if (!isset($_SESSION["user_id"])) {
           <a class="nav-link active" aria-current="page" href="orders.php">My Grading Order</a>
         </li>
         <li class="nav-item ">
-        <a class="nav-link" aria-current="page" href="add_grading.php">Add New Grading Order</a>
+        <a class="nav-link" aria-current="page" href="card-submission.php">Add New Grading Order</a>
         </li>
         <li class="nav-item">
           <a class="nav-link">My Profile</a>
