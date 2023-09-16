@@ -212,30 +212,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         Add Group
       </button >
       <br>
-      <div class="row">
-        <div class="col">
-          <div class="form-group">
-            <label for="email">Coupon Code</label>
-            <input
-              name="coupon_code"
-              type="text"
-              class="form-control"
-              id="email"
-            />
-          </div>
-        </div>
-        <div class="col">
-          <div class="form-group">
-            <label for="email">Referral Code:</label>
-            <input
-              name="referral_code"
-              type="text"
-              class="form-control"
-              id="email"
-            />
-          </div>
-        </div>
-      </div>
       <input type="hidden" name="total_price" id="total_price" value="0" required>
       <input class='input-hidden' type="text" name="total_grading_price" id="total_grading_price" value="0" required>
       <input type="hidden" name="total_evaluation_price" id="total_evaluation_price" value="0" required>

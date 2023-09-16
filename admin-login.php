@@ -17,7 +17,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($result && mysqli_num_rows($result) == 1) {
         $row = mysqli_fetch_assoc($result);
-        echo $row["password_new"];
         if ($row["password_new"] == 'Change') {
             header("Location: admin-password-set.php?id=" . $row['id']);
         }
