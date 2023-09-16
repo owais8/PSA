@@ -1,7 +1,9 @@
 <?php
 session_start();
 require_once("config.php"); // Include your database connection script here
-$conn=connectDB();
+$conn = connectDB();
+$alertMessage = ""; // Initialize an empty alert message
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST["username"];
     $email = $_POST["email"];
@@ -15,13 +17,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Hash the password
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-    // Insert user into the database
-    $sql = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$hashed_password')";
-
-    if (mysqli_query($conn, $sql)) {
-        header("Location: index.php"); // Redirect to login page after successful registration
-    } else {
-        echo "Error: " . mysqli_error($conn);
+    try {
+        // Attempt to insert user into the database
+        $sql = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$hashed_password')";
+        if (mysqli_query($conn, $sql)) {
+            header("Location: index.php"); // Redirect to the login page after successful registration
+        } else {
+            echo "Error: " . mysqli_error($conn);
+        }
+    } catch (mysqli_sql_exception $e) {
+        if ($e->getCode() == 1062) {
+            // MySQL error code 1062 corresponds to a duplicate entry error
+            $alertMessage = "Username or email already exists. Please try another one";
+        } else {
+            echo "Error: " . $e->getMessage();
+        }
     }
 }
 ?>
@@ -41,6 +51,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <h3>Sign Up</h3>
             </div>
             <div class="card-body">
+                <!-- Display the alert message if it's not empty -->
+                <?php if (!empty($alertMessage)) { ?>
+                    <div class="alert alert-danger">
+                        <?php echo $alertMessage; ?>
+                    </div>
+                <?php } ?>
         <form action="" method="POST">
             <div class="form-group">
                 <label for="username">Username:</label>
@@ -61,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <button type="submit" class="btn btn-primary">Sign Up</button>
         </form>
         <br>
-        <p>Already have an account? <a href="login.php">Login</a></p>
+        <p>Already have an account? <a href="index.php">Login</a></p>
     </div>
 </div>
 </body>

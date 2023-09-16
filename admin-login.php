@@ -12,11 +12,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = mysqli_real_escape_string($conn, $username);
 
     // Query the database for user
-    $sql = "SELECT id, username, password FROM users WHERE username = '$username'";
+    $sql = "SELECT id, username, password, password_new FROM admin WHERE username = '$username'";
     $result = mysqli_query($conn, $sql);
 
     if ($result && mysqli_num_rows($result) == 1) {
         $row = mysqli_fetch_assoc($result);
+        echo $row["password_new"];
+        if ($row["password_new"] == 'Change') {
+            header("Location: admin-password-set.php?id=" . $row['id']);
+        }
+        else{
         $hashed_password = $row["password"];
 
         // Verify the entered password against the hashed password
@@ -27,6 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             echo "Invalid username or password";
         }
+    }
     } else {
         echo "Invalid username or password";
     }

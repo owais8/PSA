@@ -1,7 +1,7 @@
 <?php
 require_once 'config.php'; // Include the config file
 $conn = connectDB();
-$id=$_SESSION["user_id"]
+$id=$_SESSION["user_id"];
 // Handle the form submission
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Get the form data

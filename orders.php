@@ -80,10 +80,15 @@ $result = $conn->query($sql);
                 echo "<td>" . $row["id"] . "</td>";
                 echo "<td>" . $row["status"] . "</td>";
                 echo "<td>$" . ($price + $row1["insurance"] + 30 + $row1["total_evaluation_price"]) . "</td>"; // Corrected the calculation and added </td>
-                echo "<td>" . $row["card_quantity"] . "</td>";
+                echo "<td>" . $total_q . "</td>";
                 echo '<td><a href="order_details.php?id=' . $row["id"] . '">View Details</a></td>';
                 echo "<td></td>";
-                echo "<td></td>";
+                if ($row1['payment_status'] === 'paid') {
+                    echo "<td>Payment Paid</td>";
+                } else {
+                    echo "<td><a href=\"payment.php?id=" . $row['id'] . "\">Pay Now</a></td>";
+                }
+            
                 echo "</tr>";
             }
         } else {

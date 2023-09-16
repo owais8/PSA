@@ -13,6 +13,46 @@ if ($conn->connect_error) {
 // Step 2: Retrieve user data from the database
 $sql = "SELECT id, username, email FROM users";
 $result = $conn->query($sql);
+$alertMessage='';
+
+
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $fullName = $_POST["fullName"];
+    $email = $_POST["email"];
+    $username = $_POST["username"];
+    $password = $_POST["password"];
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+    // Check if the username or email already exists in the database
+    $checkSql = "SELECT * FROM admin WHERE username = ? OR email = ?";
+    $checkStmt = $conn->prepare($checkSql);
+    $checkStmt->bind_param("ss", $username, $email);
+    $checkStmt->execute();
+    $result1 = $checkStmt->get_result();
+
+    if ($result1->num_rows > 0) {
+        // Username or email already exists, show an error message
+        $alertMessage = '<div class="alert alert-danger" role="alert">Username or email already exists. Please choose another one.</div>';
+    } else {
+        // Insert user details into the database
+        $sql1 = "INSERT INTO admin (name, username, email, password) VALUES (?, ?, ?, ?)";
+        $stmt1 = $conn->prepare($sql1);
+        $stmt1->bind_param("ssss", $fullName, $username, $email, $hashed_password);
+
+        if ($stmt1->execute()) {
+
+            header("Location: users.php"); // Redirect to the user list page
+            exit();
+        } else {
+            echo "Error: " . $stmt1->error;
+        }
+
+        $stmt->close();
+    }
+
+    $checkStmt->close();
+}
 ?>
 
 <!DOCTYPE html>
@@ -26,6 +66,48 @@ $result = $conn->query($sql);
 </head>
 <body>
     <div class="container mt-5">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">
+            Add User
+        </button>
+        <br>
+        <br>
+
+        <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addUserModalLabel">Add User</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                    <form id="addUserForm" method="post" action="">
+                        <div class="form-group">
+                            <label for="fullName">Full Name</label>
+                            <input type="text" class="form-control" id="fullName" name="fullName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save User</button>
+                    </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php echo $alertMessage; ?>
+
         <h2>User List</h2>
         <table class="table">
             <thead>
@@ -62,4 +144,8 @@ $result = $conn->query($sql);
         </table>
     </div>
 </body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </html>
