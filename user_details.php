@@ -2,7 +2,7 @@
 session_start();
 require_once 'config.php';
 $conn = connectDB();
-if (!isset($_SESSION["user_id"])) {
+if (!isset($_SESSION["user_id"]) && ($_SESSION["role"] != 'admin' || $_SESSION["role"] != 'owner')) {
     header("Location: admin-login.php");
     exit();
 }
@@ -51,6 +51,8 @@ $stmt->execute();
 
             <th scope="col">Total Price</th>
             <th scope="col">Quantity</th>
+            <th scope="col">Payment Status</th>
+
             <th scope="col">Edit Submission Number</th>
 
           </tr>
@@ -94,6 +96,8 @@ $stmt->execute();
                 echo "<td>" . $row["status"] . "</td>";
                 echo "<td>$" . ($price + $row1["insurance"] + 30 + $row1["total_evaluation_price"]) . "</td>"; // Corrected the calculation and added </td>
                 echo "<td>" . $row["card_quantity"] . "</td>";
+                echo "<td>" . $row1["payment_status"] . "</td>";
+
                 echo '<td><a href="edit_order.php?id=' . $row["id"] . '">Edit</a></td>';
                 echo "</tr>";
             }

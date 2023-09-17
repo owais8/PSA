@@ -2,7 +2,12 @@
 session_start();
 require_once("config.php"); // Include your database connection script here
 $conn = connectDB();
+$secretKey="6LfLDTEoAAAAANEqK-ex9ZdYNYYVG-YVndtm-m8b";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if(isset($_POST['g-recaptcha-response']) && !empty($_POST['g-recaptcha-response'])){ 
+    $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secretKey.'&response='.$_POST['g-recaptcha-response']); 
+    $responseData = json_decode($verifyResponse);              
+    if($responseData->success){ 
     $username = $_POST["username"];
     $password = $_POST["password"];
 
@@ -10,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = mysqli_real_escape_string($conn, $username);
 
     // Query the database for user
-    $sql = "SELECT id, username, password FROM users WHERE username = '$username'";
+    $sql = "SELECT id, username, password FROM users WHERE username = '$username' AND status = 'verified'";
     $result = mysqli_query($conn, $sql);
 
     if ($result && mysqli_num_rows($result) == 1) {
@@ -23,11 +28,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION["username"] = $row["username"];
             header("Location: card-submission.php"); // Redirect to a dashboard page
         } else {
-            echo "Invalid username or password";
+            $alertMessage="Invalid username or password";
         }
     } else {
-        echo "Invalid username or password";
+        $alertMessage="Invalid username or password";
     }
+}
+}
+else{
+    $alertMessage = "Please check the captcha form";
+}
 }
 ?>
 <!DOCTYPE html>
@@ -49,6 +59,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <h3>Login</h3>
             </div>
             <div class="card-body">
+            <?php if (!empty($alertMessage)) { ?>
+                    <div class="alert alert-danger">
+                        <?php echo $alertMessage; ?>
+                    </div>
+                <?php } ?>
                 <form action="" method="POST">
                     <div class="form-group">
                         <label for="username">Username:</label>
@@ -58,6 +73,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <label for="password">Password:</label>
                         <input type="password" class="form-control" id="password" name="password" required>
                     </div>
+                    <div class="g-recaptcha" data-sitekey="6LfLDTEoAAAAABT7y8pGw3FjlXwV0quvUsH8TaZU"></div>
+                 <br/>
+                    
                     <button type="submit" class="btn btn-primary">Login</button>
                 </form>
             </div>
@@ -67,4 +85,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 </body>
+<script src="https://www.google.com/recaptcha/api.js"></script>
+
 </html>

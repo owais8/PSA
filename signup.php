@@ -2,9 +2,15 @@
 session_start();
 require_once("config.php"); // Include your database connection script here
 $conn = connectDB();
+$successMessage = ""; // Initialize an empty success message
 $alertMessage = ""; // Initialize an empty alert message
-
+$secretKey="6LfLDTEoAAAAANEqK-ex9ZdYNYYVG-YVndtm-m8b";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if(isset($_POST['g-recaptcha-response']) && !empty($_POST['g-recaptcha-response'])){ 
+    $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secretKey.'&response='.$_POST['g-recaptcha-response']); 
+             
+    $responseData = json_decode($verifyResponse);              
+    if($responseData->success){ 
     $username = $_POST["username"];
     $email = $_POST["email"];
     $password = $_POST["password"];
@@ -16,12 +22,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Hash the password
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+    $verification_token = bin2hex(random_bytes(32));
+    $verification_link = "http://localhost/PSA/verify.php?token=$verification_token";
 
     try {
         // Attempt to insert user into the database
-        $sql = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$hashed_password')";
+        $to = $email;
+        $subject = "Email Verification";
+        $message = "Click the following link to verify your email: $verification_link";
+        $headers = "From: owaisorakzai77@gmail.com";
+        $sql = "INSERT INTO users (username, email, password, verification_token) VALUES ('$username', '$email', '$hashed_password', '$verification_token')";
         if (mysqli_query($conn, $sql)) {
-            header("Location: index.php"); // Redirect to the login page after successful registration
+            mail($to, $subject, $message, $headers);
+            $successMessage = "Registration successful. Please check your email to verify your account.";
         } else {
             echo "Error: " . mysqli_error($conn);
         }
@@ -34,6 +47,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 }
+}
+else{
+    $alertMessage = "Please check the captcha form";
+}
+}   
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -51,6 +69,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <h3>Sign Up</h3>
             </div>
             <div class="card-body">
+            <?php if (!empty($successMessage)) { ?>
+                    <div class="alert alert-success">
+                        <?php echo $successMessage; ?>
+                    </div>
+                <?php } ?>
                 <!-- Display the alert message if it's not empty -->
                 <?php if (!empty($alertMessage)) { ?>
                     <div class="alert alert-danger">
@@ -74,6 +97,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="confirm_password">Confirm Password:</label>
                 <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
             </div>
+            <div class="g-recaptcha" data-sitekey="6LfLDTEoAAAAABT7y8pGw3FjlXwV0quvUsH8TaZU"></div>
             <button type="submit" class="btn btn-primary">Sign Up</button>
         </form>
         <br>
@@ -81,4 +105,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 </div>
 </body>
+<script src="https://www.google.com/recaptcha/api.js"></script>
 </html>

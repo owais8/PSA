@@ -2,7 +2,8 @@
 session_start();
 require 'config.php'; // Include the config file
 $conn = connectDB();
-if (!isset($_SESSION["user_id"])) {
+
+if (!isset($_SESSION["user_id"]) && ($_SESSION["role"] != 'admin' || $_SESSION["role"] != 'owner')) {
     header("Location: admin-login.php");
     exit();
 }
@@ -14,7 +15,6 @@ if ($conn->connect_error) {
 $sql = "SELECT id, username, email FROM users";
 $result = $conn->query($sql);
 $alertMessage='';
-
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -42,13 +42,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($stmt1->execute()) {
 
-            header("Location: users.php"); // Redirect to the user list page
-            exit();
+            $alertMessage = '<div class="alert alert-success" role="alert">User successfully added.</div>';
         } else {
             echo "Error: " . $stmt1->error;
         }
 
-        $stmt->close();
     }
 
     $checkStmt->close();
@@ -66,9 +64,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
     <div class="container mt-5">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">
-            Add User
-        </button>
+        <div class='row'>
+            <div class='col-sm-2'>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">
+                Add User
+                </button>
+            </div>
+            <div class='col-sm-2'>
+                <a href="content.php" class="btn btn-primary">
+                Change content
+</a>
+            </div>
+            <form action="admin-reset-password.php" method="post">
+                <div class='col-sm'>
+                    <?php if ($_SESSION["role"] == "owner") { ?>
+                        <?php echo '<button type="submit" class="btn btn-primary">Reset Password</button>';?>
+                    <?php } ?>
+                </div>
+            </form>
+
+        </div>
+
         <br>
         <br>
 

@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = mysqli_real_escape_string($conn, $username);
 
     // Query the database for user
-    $sql = "SELECT id, username, password, password_new FROM admin WHERE username = '$username'";
+    $sql = "SELECT id, username, password, password_new, role FROM admin WHERE username = '$username' and reset_token=''";
     $result = mysqli_query($conn, $sql);
 
     if ($result && mysqli_num_rows($result) == 1) {
@@ -27,13 +27,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (password_verify($password, $hashed_password)) {
             $_SESSION["user_id"] = $row["id"];
             $_SESSION["username"] = $row["username"];
+            $_SESSION["role"] = $row["role"];
+
             header("Location: users.php"); // Redirect to a dashboard page
         } else {
-            echo "Invalid username or password";
+            $alertMessage= "Invalid username or password";
         }
     }
     } else {
-        echo "Invalid username or password";
+        $alertMessage= "Invalid username or password";
     }
 }
 ?>
@@ -56,6 +58,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <h3>Login</h3>
             </div>
             <div class="card-body">
+            <?php if (!empty($alertMessage)) { ?>
+                    <div class="alert alert-danger">
+                        <?php echo $alertMessage; ?>
+                    </div>
+                <?php } ?>
                 <form action="" method="POST">
                     <div class="form-group">
                         <label for="username">Username:</label>

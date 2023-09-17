@@ -2,7 +2,7 @@
 session_start();
 require_once 'config.php'; // Include the config file
 $conn = connectDB();
-
+$successMessage="";
 // Check the connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("si", $insurance, $orderId);
 
         if ($stmt->execute()) {
-            header("Location: finalize.php?id=" . $_GET["id"]);
+            $successMessage = "Order placed successfully. Please visit this <a href='orders.php'> link </a> to view your order details";
         } else {
             // Error occurred
             echo "Error: " . $stmt->error;
@@ -52,6 +52,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="card bg-light mb-6" style="max-width: 100%; padding: 20px;">
     <form method="post" action="">
     <div class="row">
+    <?php if (!empty($successMessage)) { ?>
+                    <div class="alert alert-success">
+                        <?php echo $successMessage; ?>
+                    </div>
+                <?php } ?>
         <div class="col">
             <div class="form-group">
                 <label for="email">Add Phone Number</label>

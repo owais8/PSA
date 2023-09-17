@@ -4,6 +4,13 @@ session_start();
 require_once('config.php');
 $conn=connectDB();
 $id=$_SESSION["user_id"];
+// get data from website column
+$sql8 = "SELECT * FROM website where id=1";
+$result8 = $conn->query($sql8);
+$row8 = $result8->fetch_assoc();
+$home_text = $row8["home_text"];
+
+
 
 // Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -35,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             VALUES ('$first_name', '$last_name', '$email', '$phone_number', '$address', '$street_address', '$address_line2', '$state', '$coupon_code', '$referral_code', '$total_price', '$total_grading_price', '$total_evaluation_price', '$card_value', '$service_provider', '$card_quantity', '$id')";
 
     if ($conn->query($sql) === TRUE) {
+        
         $submission_id = $conn->insert_id;
         header("Location: logging.php?id=" . $submission_id); // Redirect to insurance page
 
@@ -70,17 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <form action="" method='post' class="container-md" id='myForm'>
       <h2><b>CARD SUBMISSION</b></h2>
-      <p>You are more than welcome to submit different service levels in the same package to us (ex: PSA bulk & SGC regular).</p>
-  
-      <p>However each service level needs a different order placed on our site, as they would come back at different times.</p>
-  
-      <p>So you would place your order for (ex: 20  cards bulk, complete shipping and place order) then place a new order for the other service(s) you need.</p>
-  
-      <p>You would then print out your 2 packing slips, put each form with the cards going each service level in the 1 package.</p>
-  
-      <p>This allows you to get status updates on each individual order. If submitting just 1 order type (ex: PSA bulk) simply put your packing slip with the cards and you are good to go!</p>
-  
-      <p>Good luck on your submission, and thank you for choosing kksportscards.</p>
+      <p><?php echo $home_text?></p>
       <br>
       <div class="row">
         <div class="col">

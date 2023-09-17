@@ -2,6 +2,10 @@
 // Assuming you have a database connection established
 require 'config.php';
 $conn = connectDB();
+if (!isset($_SESSION["user_id"]) && ($_SESSION["role"] != 'admin' || $_SESSION["role"] != 'owner')) {
+    header("Location: admin-login.php");
+    exit();
+}
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Check if the "newPassword" field is submitted and not empty
     if (isset($_POST["newPassword"]) && !empty($_POST["newPassword"])) {
