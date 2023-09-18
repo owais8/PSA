@@ -64,25 +64,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
     <div class="container mt-5">
-        <div class='row'>
-            <div class='col-sm-2'>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">
-                Add User
-                </button>
-            </div>
-            <div class='col-sm-2'>
-                <a href="content.php" class="btn btn-primary">
-                Change content
-</a>
-            </div>
-            <form action="admin-reset-password.php" method="post">
-                <div class='col-sm'>
-                    <?php if ($_SESSION["role"] == "owner") { ?>
-                        <?php echo '<button type="submit" class="btn btn-primary">Reset Password</button>';?>
-                    <?php } ?>
-                </div>
-            </form>
+    <div class='row'>
+        <div class='col-sm-4 d-flex justify-content-between'>
+            <?php if ($_SESSION["role"] == "owner") { ?>
+                <?php echo '<button type="button" class="btn btn-primary mr-2" data-toggle="modal" data-target="#addUserModal">Add User</button>';?>
+            <?php } ?>
 
+            <form action="admin-reset-password.php" method="post">
+                <button type="submit" class="btn btn-primary">Reset Password</button>
+            </form>
+            <a href="logout.php" class="btn btn-primary">Logout</a>
+
+            </div>
         </div>
 
         <br>

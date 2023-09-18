@@ -54,7 +54,7 @@ if ($result1->num_rows > 0) {
         ]],
         'mode' => 'payment',
         'success_url' => 'http://localhost/PSA/success.php',
-        'cancel_url' => 'http://localhost/PSA/cancel',
+        'cancel_url' => 'http://log.virginiabeachcardshop.com/cancel',
         'client_reference_id' => $order_id, // Set order_id as client_reference_id
         'payment_intent_data'=>['metadata' => $metadata],
 
