@@ -73,7 +73,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <form action="admin-reset-password.php" method="post">
                 <button type="submit" class="btn btn-primary">Reset Password</button>
             </form>
-            <a href="logout.php" class="btn btn-primary">Logout</a>
+            <?php if ($_SESSION["role"] == "owner") { ?>
+                <?php echo '<a href="admins.php" class="btn btn-primary">Admin List</a>';?>
+            <?php } ?>
+
+            <a href="admin-logout.php" class="btn btn-primary">Logout</a>
 
             </div>
         </div>

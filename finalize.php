@@ -7,6 +7,11 @@ $successMessage="";
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
+if (!isset($_SESSION["user_id"])){
+    header("Location: index.php");
+    exit();
+}
+$user_id=$_SESSION["user_id"];
 
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -20,7 +25,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("si", $insurance, $orderId);
 
         if ($stmt->execute()) {
+            $sql2="SELECT * FROM submissions WHERE id = ?";
+            $stmt2 = $conn->prepare($sql2);
+            $stmt2->bind_param("i", $orderId);
+            $stmt2->execute();
+            $result = $stmt2->get_result();
+            $row = $result->fetch_assoc();
+            $email = $row['email'];
+            $to = $email;
+            $subject = "Order Placed Successfully";
+            $message = "Order placed successfully. Please visit this link to view your order details http://localhost/PSA/orders.php";
+            $headers = "From: owaisorakzai77@gmail.com";
             $successMessage = "Order placed successfully. Please visit this <a href='orders.php'> link </a> to view your order details";
+            mail($to, $subject, $message, $headers);
+
         } else {
             // Error occurred
             echo "Error: " . $stmt->error;
