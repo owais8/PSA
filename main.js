@@ -14,6 +14,8 @@
             "2023 NATIONAL ON-SITE GRADING|150": 150
           };
         const evaluateCardsCheck = document.getElementById("evaluateCardsCheck");
+        const wipe = document.getElementById("wipeDownService");
+
         const cardsPrice = document.getElementById("grandTotal");
         const selectedOption = document.getElementById("input_2_24");
         document.getElementById("myForm").addEventListener("submit", function (event) {
@@ -27,6 +29,11 @@
         });
         // Function to update the price
         evaluateCardsCheck.addEventListener("change", updateEvaluation);
+        wipe.addEventListener("change", updateWipeDown);
+        wipe.addEventListener("change", updatePrice);
+        psaQuantityInput.addEventListener("input", updateWipeDown);
+
+
         psaQuantityInput.addEventListener("input", updateEvaluation);
         psaQuantityInput.addEventListener("input", updatePrice);
         selectedOption.addEventListener("change", updatePrice);
@@ -35,8 +42,8 @@
             const isEvaluationChecked = evaluateCardsCheck.checked;
             document.getElementById("card_quantity").value = quantity;
             if (isEvaluationChecked) {
-                evaluationPrice.textContent = "$" + (3 * quantity).toFixed(2);
-                document.getElementById("total_evaluation_price").value = "$" + (3 * quantity).toFixed(2);
+                evaluationPrice.textContent = "$" + (4 * quantity).toFixed(2);
+                document.getElementById("total_evaluation_price").value = "$" + (4 * quantity).toFixed(2);
 
             } else {
                 evaluationPrice.textContent = "$0.00";
@@ -47,13 +54,28 @@
 
 
             if (isEvaluationChecked) {
-                return "$" + (3 * quantity).toFixed(2)
+                return "$" + (4 * quantity).toFixed(2)
             } else {
                 return "$0.00"
             }
 
         }
         updateEvaluation();
+        function updateWipeDown() {
+            const quantity = document.getElementById("psaQuantityInput").value
+            const isWipeChecked = wipe.checked;
+            document.getElementById("card_quantity").value = quantity;
+            if (isWipeChecked) {
+                wipeDownPrice.textContent = "$" + (1.5 * quantity).toFixed(2);
+                document.getElementById("total_wipe_down_price").value = "$" + (1.5 * quantity).toFixed(2);
+
+            } else {
+                wipeDownPrice.textContent = "$0.00";
+                document.getElementById("total_wipe_down_price").value = "$0.00";
+
+            }
+            updateTotalPrice();
+        }
 
        function updatePrice(){
             const quantity = document.getElementById("psaQuantityInput").value
@@ -72,8 +94,11 @@
         function updateTotalPrice() {
 
             const evaluationPriceValue = parseFloat(evaluationPrice.textContent.replace("$", ""));
+            const wipeDown = parseFloat(wipeDownPrice.textContent.replace("$", ""));
+
             const cardsPriceValue = parseFloat(cardsPrice.textContent.replace("$", ""));
-            const total = evaluationPriceValue + cardsPriceValue;
+            console.log(wipeDown)
+            const total = evaluationPriceValue + cardsPriceValue+wipeDown;
     
             document.getElementById("totalPrice").textContent = "$" + total.toFixed(2);
             document.getElementById("total_price").value = "$" + total.toFixed(2);;

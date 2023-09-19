@@ -23,8 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $street_address = $_POST["street_address"];
     $address_line2 = $_POST["address_line2"];
     $state = $_POST["state"];
-    $coupon_code = $_POST["coupon_code"];
-    $referral_code = $_POST["referral_code"];
+    $coupon_code = "";
+    $referral_code = "";
     $total_price = $_POST["total_price"];
     $total_price = str_replace(['$', ','], '', $total_price);
 
@@ -216,6 +216,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <input type="hidden" name="card_value" id="card_value" value="0" required="required">
       <input type="hidden" name="service_provider" id="service_provider" required="true">
       <input type="hidden" name="card_quantity" id="card_quantity" required="required">
+      <input type="hidden" name="total_wipe_down_price" id="total_wipe_down_price" required="required">
+
 
 
 <!-- Button trigger modal -->
@@ -244,6 +246,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   
                       Evaluation is $3 per card.
                     </p>
+                    <div class="mb-3 form-check">
+                        <input class="form-check-input" type="checkbox" id="wipeDownService">
+                        <label class="form-check-label" for="evaluateCardsCheck">Wipe Down Service</label>
+                    </div>
                     <!-- 2. Service Provider Select Element -->
                     <div class="mb-3">
                         <label for="serviceProviderSelect" class="form-label">Service Provider</label>
@@ -285,6 +291,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         Price:
                         <span id="evaluationPrice">0</span>
                     </p>
+                    <h6><b>Wipe Down Service</b></h6>
+                
+                  <!-- Price Calculation -->
+                  <p>
+                      Price:
+                      <span id="wipeDownPrice">0</span>
+                  </p>
                     <h5><b>Group Price</b></h5>
                     <hr>
 

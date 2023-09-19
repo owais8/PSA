@@ -35,9 +35,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $to = $email;
             $subject = "Order Placed Successfully";
             $message = "Order placed successfully. Please visit this link to view your order details http://localhost/PSA/orders.php";
-            $headers = "From: owaisorakzai77@gmail.com";
+            $headers = "From: jahan121321@gmail.com";
             $successMessage = "Order placed successfully. Please visit this <a href='orders.php'> link </a> to view your order details";
             mail($to, $subject, $message, $headers);
+            $to = 'owaisorakzai77@gmail.com';
+            $subject = "New Order Notification";
+            $message = "New order has been placed successfully. Please visit this link to view your order details http://localhost/PSA/users.php";
+            $headers = "From: jahan121321@gmail.com.com";
+            mail($to, $subject, $message, $headers);
+
 
         } else {
             // Error occurred
